@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Intro to FeatureLayer - 4.10</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Home",
+        "esri/widgets/Legend",
+        "esri/widgets/Expand",
+        "esri/core/watchUtils"
+      ],
+      function(
+        Map, MapView,
+        FeatureLayer,
+        Home,
+        Legend,
+        Expand,
+        watchUtils
+      ) {
+
+        var map = new Map({
+          basemap: "gray"
+        });
+
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-91.108446, 30.452550],
+          zoom: 13,
+          popup: {
+          actions: []
+        },
+        });
+
+    // Home widget
+    view.ui.add(new Home({
+        view: view
+      }), "top-left");
+
+    // Legend widget
+    view.ui.add(new Legend({
+        view: view
+      }), "bottom-left");
+
+   // Popup
+    const template = {
+            title: "{place}",
+            content: "Magnitude {mag} {type} hit {place} on {time}."
+          };
+
+    // Heatmap
+     const renderer = {
+            type: "heatmap",
+            colorStops: [
+            {
+              color: "rgba(177,0,38, 0)",
+              ratio: 0
+            },
+
+            {
+              color: "#e31a1c",
+              ratio: 0.2
+            },
+            {
+              color: "#fc4e2a",
+              ratio: 0.33
+            },
+            {
+              color: "#fd8d3c",
+              ratio: 0.48
+            },
+            {
+              color: "#feb24c",
+              ratio: 0.62
+            },
+            {
+              color: "#fed976",
+              ratio: 0.78
+            },
+            {
+              color: "#ffeda0",
+              ratio: 0.83
+            },
+            {
+              color: "#ffffcc",
+              ratio: 0.92
+            },
+            {
+              color: "#ffffe5",
+              ratio: 1
+            }],
+            maxPixelIntensity: 100,
+            minPixelIntensity: 10
+          };
+
+
+        // Crime incidents
+        var featureLayer = new FeatureLayer({
+          url: "https://services9.arcgis.com/SDQDNhpG8jikA0D1/arcgis/rest/services/THEFT_in_Baton_Rouge_in_2018/FeatureServer/0?token=zTrfS38ZOlKA_X6zOSNvieT5KIGUPKzvklayW8c5TDYdOhCccmdQc70MGV9Iqz8nJ9p2-GRuJ53aiboEDZTA1Va5OQwqfD1zpfNPDnx60ztfWfYeFvAugL9aTxB0QvdCA0mRodMG8wyTRA5mWRDmK8DZey9h-ug4HWaLY9K6_Wccy0_io-Dnk_dn-DlZCZsHckgUh1O0vxNqRKOv1bA-RGVW8koV4CR8TIsFxIecwcB1PyhoakUoNgoS5uBI53-C",
+          renderer: renderer,
+          popupTemplate: { // autocasts as new PopupTemplate()
+          title: "{FULL_ADDRE}",
+          content: [{
+            type: "text",
+            text: "Crime date is {OFFENSE_DA}."
+        }]}
+      });
+
+        map.add(featureLayer);
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
