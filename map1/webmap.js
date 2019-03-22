@@ -47,5 +47,5 @@ let myPolyLine = L.polyline ([
 
 //add a popup
 myMarker.bindPopup('Baton Rouge')
-myPolyLine.bindPopup('Highway 10')
+myPolyLine.bindPopup('Highway 10 from Baton Rouge to New Orleans')
 myPolygon.bindPopup('<em>LSU school area</em>')
