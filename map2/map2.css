@@ -6,6 +6,11 @@
   }
 
 /* tittle */
+#tittle {
+    text-align: center;
+}
+
+/* explain */
 #text {
     text-align: center;
 }
