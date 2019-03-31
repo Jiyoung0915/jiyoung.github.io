@@ -1,0 +1,28 @@
+/* map viewer */
+#sanFran {
+  height: 800px;
+  width: 1200px;
+  margin: 0 auto;
+  }
+
+/* tittle */
+#text {
+    text-align: center;
+}
+
+/* unvisited link */
+a:link {
+  color: #a64dff;
+  text-decoration: none;
+
+}
+
+/* visited link */
+a:visited {
+  color: #6699ff;
+}
+
+/* mouse over link */
+a:hover {
+  color: #944dff;
+}
