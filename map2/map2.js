@@ -12,14 +12,11 @@ L.esri.dynamicMapLayer({
 
 
 // load surfing places from ArcGIS Online
-var surfingPoint = L.esri.featureLayer({
+var surfingLocation = L.esri.featureLayer({
   url: 'https://services9.arcgis.com/SDQDNhpG8jikA0D1/arcgis/rest/services/surfing/FeatureServer/0',
-  style: function (feature) {
-          return {color: 'blue', weight: 2 };
-        }
 }).addTo(surfSanFran);
 
 // Popup of surfingPoint Layer
-surfingPoint.bindPopup(function (layer) {
+surfingLocation.bindPopup(function (layer) {
     return L.Util.template('<p>{Place}</p>', layer.feature.properties);
   });
