@@ -14,28 +14,129 @@ let basemaps = {
 }
 
 //Control box for the basemaps
-L.control.layers(basemaps).addTo(brMap)
+let freeZoneLayer = L.layerGroup().addTo(brMap)
+let crimeLayer = L.layerGroup().addTo(brMap)
+let vacancyLayer = L.layerGroup().addTo(brMap)
+let houseLayer = L.layerGroup().addTo(brMap)
 
-// load a latest gridded surface oceanographic forecast model guidance and immediate shelf from the NOAA/NOS San Francisco Bay Operational Forecast System (SFBOFS).
-let censusDemographicsUrl = 'https://opendata.arcgis.com/datasets/68c3d1291e9442b38012cf0dffddf61f_0.geojson'
-
-jQuery.getJSON(censusDemographicsUrl, function (data) {
-  L.geoJSON(data).addTo(brMap)
-})
-
-let stateStyle = function (feature) {
-  return {
-    color: 'green',
-    weight: 1,
-    fillOpacity: 0.2
-  }
+// Public safety freeZone
+let freeZoneUrl = 'https://opendata.arcgis.com/datasets/a1de4831b67b4953a737f614cc10abdb_0.geojson'
+jQuery.getJSON(freeZoneUrl, function (data) {
+  let freeZoneStyle = {
+  color: '#0868ac',
+  weight: 1,
+  fillOpacity: 0.5,
+  array: 1
 }
-L.geoJSON(data,stateGeojsonOptions).addTo(brMap)
-//
-// //POPup
-// let censusLayer = L.layerGroup().addTo(brMap)
-// censusLayer.addLayer(layer)
-// let layers = {
-//   'Vancany Rates by census block group': censusLayer
-// }
-// L.control.layers(basemaps, layers).addTo(renameThis)
+    let onEachFeature = function (feature, layer) {           //Begining part of popup
+      let freeZoneName = feature.properties.DESCRIPTIO
+      let freeZoneAdr = feature.properties.FULL_ADDRE
+      layer.bindPopup(freeZoneName + '<br>Address: '+ freeZoneAdr)
+      freeZoneLayer.addLayer(layer)
+      }
+		let freeZoneGeojsonOptions = {
+			style: freeZoneStyle,
+      onEachFeature: onEachFeature
+ 		}
+L.geoJSON(data, freeZoneGeojsonOptions).addTo(brMap)})
+
+// load a census block group map with crime data.
+let crimeDemographicsUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/map3/Census_Crime_DayNight.geojson'
+jQuery.getJSON(crimeDemographicsUrl, function (data) {        //Crime rate choropleth
+  let crimeStyle = function (feature) {
+    let crime = feature.properties.Count_
+  	let population = feature.properties.TOTAL_POPU
+		let crimeRate = crime / population * 100000
+		let crimeColor = '#bdc9e1'
+				if ( crimeRate < 400000 ) {crimeColor = '#a50f15'}
+        if ( crimeRate < 220000 ) { crimeColor = '#de2d26' }
+        if ( crimeRate < 130000 ) { crimeColor = '#fb6a4a' }
+        if ( crimeRate < 70000 ) { crimeColor = '#fcae91' }
+				if ( crimeRate < 3000 ) { crimeColor = '#fee5d9' }
+						return {
+							fillColor: crimeColor,
+							color: crimeColor,                               //use the color variables
+						 	weight: 1,
+						 	fillOpacity: 0.5,
+						 	dashArray: '3'
+						}
+		}
+    let onEachFeature = function (feature, layer) {           //Begining part of popup
+      let crime = feature.properties.Count_
+      let population = feature.properties.TOTAL_POPU
+      let crimeRate = crime / population * 100000
+      let crimeRateRound = Math.round(crimeRate)
+      layer.bindPopup('Crime rate is ' + crimeRateRound )
+      crimeLayer.addLayer(layer)
+      }
+		let crimeGeojsonOptions = {
+			style: crimeStyle,
+      onEachFeature: onEachFeature
+ 		}
+L.geoJSON(data, crimeGeojsonOptions).addTo(brMap)})
+
+// load a census block group map for the vacancy rate.
+let vacancyUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/map3/Census_Crime_DayNight.geojson'
+jQuery.getJSON(vacancyUrl, function (data) {              //Vacancy rate choropleth
+  let vacancyStyle = function (feature) {
+      let vacancyRa = feature.properties.VACANCY_RA
+      let vacancyColor = '#bdc9e1'
+				if ( vacancyRa < 21 ) { vacancyColor = '#756bb1'}
+        if ( vacancyRa < 12 ) { vacancyColor = '#bcbddc' }
+        if ( vacancyRa < 3 )  { vacancyColor = '#efedf5' }
+						return {
+							fillColor: vacancyColor,
+							color: vacancyColor,                               //use the color variables
+						 	weight: 1,
+						 	fillOpacity: 0.7,
+						 	dashArray: '3'
+						}
+      }
+		  let onEachFeature = function (feature, layer) {           //Begining part of popup
+      let vacancyRa = feature.properties.VACANCY_RA
+      layer.bindPopup('vacancy rate is ' + vacancyRa )
+      vacancyLayer.addLayer(layer)
+      }
+		let vacancyGeojsonOptions = {
+			style: vacancyStyle,
+      onEachFeature: onEachFeature
+ 		}
+L.geoJSON(data, vacancyGeojsonOptions).addTo(brMap)})
+
+
+// load a census block group map for the vacancy rate.
+let houseUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/map3/Census_Crime_DayNight.geojson'
+jQuery.getJSON(houseUrl, function (data) {              //house own or rent rate choropleth
+    let houseStyle = function (feature) {
+    let houseRa = feature.properties.PERCENT_OW
+    let houseColor = '#bdc9e1'
+    	if ( houseRa < 101 ) { houseColor = '#5ab4ac'}
+      if ( houseRa < 51 ) { houseColor = '#d8b365' }
+    			return {
+    				fillColor: houseColor,
+    				color: houseColor,                               //use the color variables
+    			 	weight: 1,
+    			 	fillOpacity: 0.7,
+    			 	dashArray: '3'
+    			}
+    }
+    let onEachFeature = function (feature, layer) {           //Begining part of popup
+    let houseRa = feature.properties.PERCENT_OW
+    layer.bindPopup('Home-ownership rate is ' + houseRa )
+    houseLayer.addLayer(layer)
+    }
+    let houseGeojsonOptions = {
+    style: houseStyle,
+    onEachFeature: onEachFeature
+    }
+L.geoJSON(data, houseGeojsonOptions).addTo(brMap)})
+
+
+// layer on or off
+let layers = {
+  'Home-ownership rate': houseLayer,
+  'Vacancy rate': vacancyLayer,
+  'Crime rate': crimeLayer,
+  'Drug and Gun free Zone': freeZoneLayer
+}
+L.control.layers(basemaps, layers).addTo(brMap)
