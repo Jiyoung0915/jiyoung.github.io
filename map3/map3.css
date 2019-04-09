@@ -14,7 +14,9 @@
 #text {
     text-align: center;
 }
-
+#explain {
+    text-align: center;
+}
 /* unvisited link */
 a:link {
   color: #a64dff;
