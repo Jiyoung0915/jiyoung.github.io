@@ -14,48 +14,38 @@ let basemaps = {
 }
 
 //Control box for the basemaps
-let freeZoneLayer = L.layerGroup().addTo(brPointMap)
-let crimeLayer = L.layerGroup().addTo(brPointMap)
+let gifLayer = L.layerGroup().addTo(brPointMap)
+let heatMapLayer = L.layerGroup().addTo(brPointMap)
 let vacancyLayer = L.layerGroup().addTo(brPointMap)
 let houseLayer = L.layerGroup().addTo(brPointMap)
 
-// Public safety freeZone
-let freeZoneUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
-$.getJSON(freeZoneUrl, function(data){
-  var theftIcon =L.icon({
-    iconUrl: 'https://jiyoung0915.github.io/jiyoung.github.io/theft.gif',
-    iconSize: [50,40]
-  });
-  L.geoJson(data ,{
-    pointToLayer: function(feature,latlng){
-	  return L.marker(latlng,{icon: theftIcon});
-    }
-  }  ).addTo(brPointMap);
+// gif layer
+// let gifUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
+// $.getJSON(gifUrl, function(data){
+//   var theftIcon =L.icon({
+//     iconUrl: 'https://jiyoung0915.github.io/jiyoung.github.io/theft.gif',
+//     iconSize: [50,40]
+//   });
+//   L.geoJson(data ,{
+//     pointToLayer: function(feature,latlng){
+// 	  return L.marker(latlng,{icon: theftIcon});
+//     }
+//   }  ).addTo(brPointMap);
+// });
+
+// Heat map layer
+let heatMapUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
+$.getJSON(heatMapUrl, function (data) {
+  var locations = data.features.map(function(rat) {
+      // the heatmap plugin wants an array of each location
+      var location = rat.geometry.coordinates.reverse();
+      location.push(0.5);
+      return location;
+    });
+
+  var heat = L.heatLayer(locations, { radius: 35 })
+map.addLayer(heat);
 });
-
-// L.geoJSON(data, freeZoneGeojsonOptions).addTo(brPointMap)})
-
-// Public safety freeZone
-// let freeZoneUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
-// jQuery.getJSON(freeZoneUrl, function (data) {
-//   let freeZoneStyle = {
-//   color: '#0868ac',
-//   weight: 1,
-//   fillOpacity: 0.5,
-//   array: 1
-// }
-//     let onEachFeature = function (feature, layer) {           //Begining part of popup
-//       let freeZoneName = feature.properties.DESCRIPTIO
-//       let freeZoneAdr = feature.properties.FULL_ADDRE
-//       layer.bindPopup(freeZoneName + '<br>Address: '+ freeZoneAdr)
-//       freeZoneLayer.addLayer(layer)
-//       }
-// 		let freeZoneGeojsonOptions = {
-// 			style: freeZoneStyle,
-//       onEachFeature: onEachFeature
-//  		}
-// L.geoJSON(data, freeZoneGeojsonOptions).addTo(brPointMap)})
-
 //
 // // load a census block group map with crime data.
 // let crimeDemographicsUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/map3/Census_Crime_DayNight.geojson'
