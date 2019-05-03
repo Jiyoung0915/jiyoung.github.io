@@ -54,3 +54,6 @@ let layers = {
   'Top crime': crimeLayer
 }
 L.control.layers(basemaps, layers).addTo(brPolygonMap)
+
+//scale bar
+L.control.scale().addTo(brPolygonMap);

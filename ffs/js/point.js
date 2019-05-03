@@ -1,5 +1,5 @@
 // Coordinates of Baton Rouge and zoom level of the map
-let brPointMap = L.map('brPointMapView').setView([30.5230936,-91.071391], `11`)
+let brPointMap = L.map('brPointMapView').setView([30.4489936,-91.125555], `12`)
 
 // load basemap: black, streets and gray map
 let streetsMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(brPointMap)
@@ -19,32 +19,28 @@ let heatMapLayer = L.layerGroup().addTo(brPointMap)
 let vacancyLayer = L.layerGroup().addTo(brPointMap)
 let houseLayer = L.layerGroup().addTo(brPointMap)
 
-// gif layer
-// let gifUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
-// $.getJSON(gifUrl, function(data){
-//   var theftIcon =L.icon({
-//     iconUrl: 'https://jiyoung0915.github.io/jiyoung.github.io/theft.gif',
-//     iconSize: [50,40]
-//   });
-//   L.geoJson(data ,{
-//     pointToLayer: function(feature,latlng){
-// 	  return L.marker(latlng,{icon: theftIcon});
-//     }
-//   }  ).addTo(brPointMap);
-// });
+//gif layer
+let gifUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
+$.getJSON(gifUrl, function(data){
+  var theftIcon =L.icon({
+    iconUrl: 'https://jiyoung0915.github.io/jiyoung.github.io/theft.gif',
+    iconSize: [50,40]
+  });
+  L.geoJson(data ,{
+    pointToLayer: function(feature,latlng){
+	  return L.marker(latlng,{icon: theftIcon});
+    }
+  }  ).addTo(brPointMap);
+});
 
 // Heat map layer
 let heatMapUrl = 'https://jiyoung0915.github.io/jiyoung.github.io/Crime_Nighttime.geojson'
 $.getJSON(heatMapUrl, function (data) {
-  var locations = data.features.map(function(rat) {
-      // the heatmap plugin wants an array of each location
-      var location = rat.geometry.coordinates.reverse();
-      location.push(0.5);
-      return location;
-    });
-
-  var heat = L.heatLayer(locations, { radius: 35 })
-map.addLayer(heat);
+  var heat = L.heatLayer(heatMapUrl, {
+    radius: 35,
+    blur: 15,
+    maxZoom: 17
+  }).addTo(brPointMap);
 });
 //
 // // load a census block group map with crime data.
@@ -147,3 +143,6 @@ map.addLayer(heat);
 //   'Drug and Gun free Zone': freeZoneLayer
 // }
 L.control.layers(basemaps).addTo(brPointMap)
+
+//scale bar
+L.control.scale().addTo(brPointMap);

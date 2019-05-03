@@ -4,6 +4,12 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/
 	subdomains: 'abcd',
 	maxZoom: 19
 }).addTo(myMap)
+
+//Add marker
 let myMarker = L.marker([30.411831, -91.179157]).addTo(myMap)
 
+//popup
 myMarker.bindPopup('The First Crime Finder System')
+
+//scale bar
+L.control.scale().addTo(myMap);
