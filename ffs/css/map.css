@@ -1,0 +1,12 @@
+svg { background-color: #eee; }
+svg .municipality { fill: #cbc2c2; stroke: gray; }
+svg .municipality:hover { stroke: #333; }
+svg circle {
+	fill: orange;
+	opacity: .5;
+	stroke: white;
+	}
+svg circle:hover {
+	fill: red;
+	stroke: #333;
+	}	
