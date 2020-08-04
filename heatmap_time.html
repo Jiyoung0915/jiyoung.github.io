@@ -145,11 +145,11 @@ a {
 <!--color-->
 <div class='session'>
 <h2> <br>기호 선택</h2>
-<p><a href="https://jiyoung0915.github.io/jiyoung.github.io/point_time.html"><font size="2" color="black">단계적 색상</font></a>	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://jiyoung0915.github.io/jiyoung.github.io/heatmap_time.html"><font size="2" color="black"><b>빈도 지도</b></a><br>
-<a href="https://jiyoung0915.github.io/jiyoung.github.io/point_time_size.html"><font size="2" color="black">단계적 도형</font></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://jiyoung0915.github.io/jiyoung.github.io/time_color_point.html"><font size="2" color="black">중복 기호(단계적 도형)</a><br>
-<a href="https://jiyoung0915.github.io/jiyoung.github.io/point_time_pro.html"><font size="2" color="black">비율적 도형</font></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://jiyoung0915.github.io/jiyoung.github.io/time_color_point_pro.html"><font size="2" color="black">중복 기호(비율적 도형)</a></p>
+<p><a href="http://jiyoungis.com/point_time.html"><font size="2" color="black">단계적 색상</font></a>	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/heatmap_time.html"><font size="2" color="black"><b>빈도 지도</b></a><br>
+<a href="http://jiyoungis.com/point_time_size.html"><font size="2" color="black">단계적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point.html"><font size="2" color="black">중복 기호(단계적 도형)</a><br>
+<a href="http://jiyoungis.com/point_time_pro.html"><font size="2" color="black">비율적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point_pro.html"><font size="2" color="black">중복 기호(비율적 도형)</a></p>
 </div>
 
   <hr></hr>
@@ -181,7 +181,7 @@ map.on('load', () => {
   //gejson
   map.on('load',function(){map.addSource('byc',{ 
 	  "type": "geojson",
-	  "data": 'https://jiyoung0915.github.io/jiyoung.github.io/sharing.geojson' });
+	  "data": 'http://jiyoungis.com/geojson/totalbyc.geojson' });
 
      map.addLayer({
         "id": "bicycle",
@@ -194,11 +194,11 @@ map.on('load', () => {
         "paint": {
             //Increase the heatmap weight based on frequency and property magnitude
             "heatmap-weight": {
-                "property": "code",
+                "property": "average",
                 "type": "exponential",
                 "stops": [
                     [1, 0],
-                    [150, 1]
+                    [100, 1]
                 ]
             },
             //Increase the heatmap color weight weight by zoom level
@@ -252,7 +252,7 @@ map.on('load', () => {
         "paint": {
             //Size circle raidus by earthquake magnitude and zoom level
             "circle-radius": {
-                "property": "rent",
+                "property": "average",
                 "type": "exponential",
                 "stops": [
                     [{ zoom: 15, value: 1 }, 5],
@@ -263,15 +263,15 @@ map.on('load', () => {
             },
             //Color circle by earthquake magnitude
             "circle-color": {
-                "property": "rent",
+                "property": "average",
                 "type": "exponential",
                 "stops": [
                     [1, "rgba(33,102,172,0)"],
                     [3, "rgb(103,169,207)"],
-                    [5, "rgb(209,229,240)"],
-                    [10, "rgb(253,219,199)"],
+                    [7, "rgb(209,229,240)"],
+                    [14, "rgb(253,219,199)"],
                     [24, "rgb(239,138,98)"],
-                    [50, "rgb(178,24,43)"]
+                    [100, "rgb(178,24,43)"]
                 ]
             },
             "circle-stroke-color": "white",
