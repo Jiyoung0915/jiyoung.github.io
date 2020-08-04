@@ -1,0 +1,22 @@
+{
+"type": "FeatureCollection",
+"name": "subway",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "전철역": 152.0, "전철역_": "종각", "호선": 1.0, "y": 37.570161, "x": 126.982923 }, "geometry": { "type": "Point", "coordinates": [ 126.982923, 37.570161 ] } },
+{ "type": "Feature", "properties": { "전철역": 2535.0, "전철역_": "종로3가", "호선": 5.0, "y": 37.571607, "x": 126.991806 }, "geometry": { "type": "Point", "coordinates": [ 126.991806, 37.571607 ] } },
+{ "type": "Feature", "properties": { "전철역": 319.0, "전철역_": "종로3가", "호선": 3.0, "y": 37.571607, "x": 126.991806 }, "geometry": { "type": "Point", "coordinates": [ 126.991806, 37.571607 ] } },
+{ "type": "Feature", "properties": { "전철역": 153.0, "전철역_": "종로3가", "호선": 1.0, "y": 37.571607, "x": 126.991806 }, "geometry": { "type": "Point", "coordinates": [ 126.991806, 37.571607 ] } },
+{ "type": "Feature", "properties": { "전철역": 154.0, "전철역_": "종로5가", "호선": 1.0, "y": 37.570926, "x": 127.001849 }, "geometry": { "type": "Point", "coordinates": [ 127.001849, 37.570926 ] } },
+{ "type": "Feature", "properties": { "전철역": 155.0, "전철역_": "동대문", "호선": 1.0, "y": 37.57142, "x": 127.009745 }, "geometry": { "type": "Point", "coordinates": [ 127.009745, 37.57142 ] } },
+{ "type": "Feature", "properties": { "전철역": 421.0, "전철역_": "동대문", "호선": 4.0, "y": 37.57142, "x": 127.009745 }, "geometry": { "type": "Point", "coordinates": [ 127.009745, 37.57142 ] } },
+{ "type": "Feature", "properties": { "전철역": 2637.0, "전철역_": "동묘앞", "호선": 6.0, "y": 37.572627, "x": 127.016429 }, "geometry": { "type": "Point", "coordinates": [ 127.016429, 37.572627 ] } },
+{ "type": "Feature", "properties": { "전철역": 159.0, "전철역_": "동묘앞", "호선": 1.0, "y": 37.572627, "x": 127.016429 }, "geometry": { "type": "Point", "coordinates": [ 127.016429, 37.572627 ] } },
+{ "type": "Feature", "properties": { "전철역": 420.0, "전철역_": "혜화", "호선": 4.0, "y": 37.582336, "x": 127.001844 }, "geometry": { "type": "Point", "coordinates": [ 127.001844, 37.582336 ] } },
+{ "type": "Feature", "properties": { "전철역": 317.0, "전철역_": "경복궁", "호선": 3.0, "y": 37.575762, "x": 126.97353 }, "geometry": { "type": "Point", "coordinates": [ 126.97353, 37.575762 ] } },
+{ "type": "Feature", "properties": { "전철역": 318.0, "전철역_": "안국", "호선": 3.0, "y": 37.576477, "x": 126.985443 }, "geometry": { "type": "Point", "coordinates": [ 126.985443, 37.576477 ] } },
+{ "type": "Feature", "properties": { "전철역": 2533.0, "전철역_": "서대문", "호선": 5.0, "y": 37.565773, "x": 126.966641 }, "geometry": { "type": "Point", "coordinates": [ 126.966641, 37.565773 ] } },
+{ "type": "Feature", "properties": { "전철역": 2534.0, "전철역_": "광화문", "호선": 5.0, "y": 37.571026, "x": 126.976669 }, "geometry": { "type": "Point", "coordinates": [ 126.976669, 37.571026 ] } },
+{ "type": "Feature", "properties": { "전철역": 2638.0, "전철역_": "창신", "호선": 6.0, "y": 37.579661, "x": 127.015241 }, "geometry": { "type": "Point", "coordinates": [ 127.015241, 37.579661 ] } }
+]
+}
