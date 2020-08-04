@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset='utf-8' />
+<link rel="shortcut icon" href="images/TITLE.	png">
+  <title>Point</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
+  <style>
+  body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+h1 {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+h2 {
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #2dc4b2;
+}
+
+#console {
+  position: absolute;
+  width: 240px;
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  opacity: 0.8;
+}
+.session {
+  margin-bottom: 20px;
+}
+
+.row {
+  height: 12px;
+  width: 100%;
+}
+
+.colors {
+  background: linear-gradient(to right, #ffffb2, #fed976, #feb24c, #fd8d3c, #f03b20, #bd0026);
+  margin-bottom: 5px;
+}
+
+.label {
+  width: 15%;
+  display: inline-block;
+  text-align: center;
+}
+#menu {
+	background: #fff;
+	position: absolute;
+	z-index: 1;
+	top: 10px;
+	right: 10px;
+	border-radius: 3px;
+	width: 120px;
+	border: 1px solid rgba(0,0,0,0.4);
+	font-family: 'Open Sans', sans-serif;
+}
+
+#menu a {
+	font-size: 13px;
+	color: #404040;
+	display: block;
+	margin: 0;
+	padding: 0;
+	padding: 10px;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	text-align: center;
+}
+
+#menu a:last-child {
+	border: none;
+}
+
+#menu a:hover {
+	background-color: #f8f8f8;
+	color: #404040;
+}
+
+#menu a.active {
+	background-color: #3887be;
+	color: #ffffff;
+}
+
+#menu a.active:hover {
+	background: #3074a4;
+}
+.hr { border:noe; border: 1px dashed gray;}
+
+  </style>
+
+ </head>
+<body>
+<nav id="menu"></nav>
+<div id='map'></div>
+
+<!--console-->
+<div id='console'>
+  <h1>따릉이 이용내역</h1>
+
+  <!--timeslide-->
+  <div class='session' id='sliderbar'>
+  <h2>Month: <label id='active-month'>1월</label></h2>
+  <input id='slider' class='row' type='range' min='1' max='12' step='1' value='1' />
+  </div>
+
+  <hr></hr>
+
+  <!--weekend/weekday-->
+  <div class='session'>
+  <h2>대여 구분</h2>
+  <div class='row' id='filters'>
+    <input id='all' type='radio' name='toggle' value='all' checked='checked'>
+    <label for='all'>전체</label>
+    <input id='weekday' type='radio' name='toggle' value='weekday'>
+    <label for='weekday'>주중</label>
+    <input id='weekend' type='radio' name='toggle' value='weekend'>
+    <label for='weekend'>주말</label>
+  </div>
+  </div>
+<br>
+  <hr></hr>
+
+<!--color-->
+<div class='session'>
+<h2> <br>기호 선택</h2>
+<p><a href="http://jiyoungis.com/point_time.html"><font size="2" color="black"><b>단계적 색상</b></font></a>	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/heatmap_time.html"><font size="2" color="black">빈도 지도</a><br>
+<a href="http://jiyoungis.com/point_time_size.html"><font size="2" color="black">단계적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point.html"><font size="2" color="black">중복 기호(단계적 도형)</a><br>
+<a href="http://jiyoungis.com/point_time_pro.html"><font size="2" color="black">비율적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point_pro.html"><font size="2" color="black">중복 기호(비율적 도형)</a></p>
+</div>
+
+  <hr></hr>
+
+  <!--legend-->
+  <div class='session'>
+  <h2>이용 횟수</h2>
+  <div class='row colors'>
+  </div>
+  <div class='row labels'>
+    <div class='label'>0</div>
+    <div class='label'>3.5</div>
+    <div class='label'>7</div>
+    <div class='label'>14</div>
+    <div class='label'>21</div>
+    <div class='label'>24.5+</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1Ijoiaml5b3VuZyIsImEiOiJjajRmandkNnMwZjQ2MzNwZXZhMTlpcTNvIn0.mcwNgtBiCrsK4WmDpMXBsA';
+
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: [126.9895,37.5551],
+  zoom: 11
+});
+
+
+//scale bar
+map.on('load', () => {
+	map.addControl(new mapboxgl.ScaleControl({maxWidth:100}));
+});
+
+
+
+map.on('load', function() {
+
+
+  //filter
+  var filterMonth = ['==', 'month',12];
+  var filterDay = ['!=','day','Bob'];
+
+  //gejson
+  map.addLayer({
+    id: 'bicycle',
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: 'https://jiyoung0915.github.io/jiyoung.github.io/subway.geojson' 
+    },
+	layout: {
+            'visibility': 'visible'
+        },
+    paint: {
+      'circle-color': {
+        property: 'code',
+        stops: [
+          [0, '#ffffb2'],
+          [1, '#fed976'],
+          [2, '#feb24c'],
+          [3, '#fd8d3c'],
+          [4, '#f03b20'],
+          [5, '#bd0026']
+        ]
+      },
+	  'circle-stroke-color': 'white',
+	  'circle-stroke-width': 1,
+      'circle-opacity': 0.8
+    },filter: ['==', 'month', 1]
+  }, 'admin-2-boundaries-dispute');
+
+
+document.getElementById('slider').addEventListener('input', function(e) {
+  // get the current month as an integer
+  var month = parseInt(e.target.value);
+  // map.setFilter(layer-name, filter)
+  map.setFilter('bicycle', ['==', 'month', month]);
+  var month1 = month % 12 ? month % 12 : 12;
+  // update text in the UI
+  document.getElementById('active-month').innerText = month1 + '월';
+
+});
+
+document.getElementById('filters').addEventListener('change', function(e) {
+  var day = e.target.value;
+  var filterDay;
+  if (day === 'all') {
+    filterDay = null;
+  } else if (day === 'weekday') {
+    filterDay = ['!in', 'day', 'Sat', 'Sun'];
+  } else if (day === 'weekend') {
+    filterDay = ['in', 'day', 'Sat', 'Sun'];
+  } else {
+    console.log('error');
+  }
+  map.setFilter('bicycle', filterDay);
+});
+});
+
+//tooltip
+map.on('click', 'bicycle', function(e) {
+  new mapboxgl.Popup()
+    .setLngLat(e.features[0].geometry.coordinates)
+    .setHTML('<b>Station Name:</b> ' + e.features[0].properties.Ename + '<br>' + '<b>Total use:</b> ' + e.features[0].properties.average)
+    .addTo(map);
+});
+
+//onoff
+var toggleableLayerIds = [ 'bicycle'];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+</script>
+ </body>
+</html>
