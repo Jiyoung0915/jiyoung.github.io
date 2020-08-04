@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset='utf-8' /> 
+<link rel="shortcut icon" href="images/TITLE.	png">
+  <title>Point: Heatmap</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.css' rel='stylesheet' />
+  <title>Document</title>
+  <style>
+  body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+h1 {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+h2 {
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #2dc4b2;
+}
+
+#console {
+  position: absolute;
+  width: 240px;
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  opacity: 0.8;
+}
+.session {
+  margin-bottom: 20px;
+}
+
+.row {
+  height: 12px;
+  width: 100%;
+}
+
+.colors {
+  background: linear-gradient(to right, #2dc4b2, #3bb3c3, #669ec4, #8b88b6, #a2719b, #aa5e79);
+  margin-bottom: 5px;
+}
+
+.label {
+  width: 15%;
+  display: inline-block;
+  text-align: center;
+}
+#menu {
+	background: #fff;
+	position: absolute;
+	z-index: 1;
+	top: 10px;
+	right: 10px;
+	border-radius: 3px;
+	width: 120px;
+	border: 1px solid rgba(0,0,0,0.4);
+	font-family: 'Open Sans', sans-serif;
+}
+
+#menu a {
+	font-size: 13px;
+	color: #404040;
+	display: block;
+	margin: 0;
+	padding: 0;
+	padding: 10px;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	text-align: center;
+}
+
+#menu a:last-child {
+	border: none;
+}
+
+#menu a:hover {
+	background-color: #f8f8f8;
+	color: #404040;
+}
+
+#menu a.active {
+	background-color: #3887be;
+	color: #ffffff;
+}
+
+#menu a.active:hover {
+	background: #3074a4;
+}
+.hr { border:noe; border: 1px dashed gray;}
+
+  </style>
+
+ </head>
+<body>
+<nav id="menu"></nav>
+<div id='map'></div>
+
+<!--console-->
+<div id='console'>
+  <h1>따릉이 이용내역</h1>
+
+  <!--timeslide-->
+  <div class='session' id='sliderbar'>
+  <h2>Month: <label id='active-month'>1월</label></h2>
+  <input id='slider' class='row' type='range' min='1' max='12' step='1' value='1' />
+  </div>
+
+  <hr></hr>
+
+  <!--weekend/weekday-->
+  <div class='session'>
+  <h2>대여 구분</h2>
+  <div class='row' id='filters'>
+    <input id='all' type='radio' name='toggle' value='all' checked='checked'>
+    <label for='all'>전체</label>
+    <input id='weekday' type='radio' name='toggle' value='weekday'>
+    <label for='weekday'>주중</label>
+    <input id='weekend' type='radio' name='toggle' value='weekend'>
+    <label for='weekend'>주말</label>
+  </div>
+  </div>
+<br>
+  <hr></hr>
+
+<!--color-->
+<div class='session'>
+<h2> <br>기호 선택</h2>
+<p><a href="http://jiyoungis.com/point_time.html"><font size="2" color="black">단계적 색상</font></a>	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/heatmap_time.html"><font size="2" color="black"><b>빈도 지도</b></a><br>
+<a href="http://jiyoungis.com/point_time_size.html"><font size="2" color="black">단계적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point.html"><font size="2" color="black">중복 기호(단계적 도형)</a><br>
+<a href="http://jiyoungis.com/point_time_pro.html"><font size="2" color="black">비율적 도형</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://jiyoungis.com/time_color_point_pro.html"><font size="2" color="black">중복 기호(비율적 도형)</a></p>
+</div>
+
+  <hr></hr>
+
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoiaml5b3VuZyIsImEiOiJjajRmandkNnMwZjQ2MzNwZXZhMTlpcTNvIn0.mcwNgtBiCrsK4WmDpMXBsA';
+
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: [126.9895,37.5551], 
+  zoom: 11
+});
+
+
+//scale bar
+map.on('load', () => {
+	map.addControl(new mapboxgl.ScaleControl({maxWidth:100}));
+});
+
+  
+  //filter
+  var filterMonth = ['==', 'month',12];
+  var filterDay = ['!=','day','Bob'];
+
+
+  //gejson
+  map.on('load',function(){map.addSource('byc',{ 
+	  "type": "geojson",
+	  "data": 'http://jiyoungis.com/geojson/totalbyc.geojson' });
+
+     map.addLayer({
+        "id": "bicycle",
+        "type": "heatmap",
+        "source": "byc",
+        "maxzoom": 15,
+		"layout": {
+            'visibility': 'visible'
+        },
+        "paint": {
+            //Increase the heatmap weight based on frequency and property magnitude
+            "heatmap-weight": {
+                "property": "average",
+                "type": "exponential",
+                "stops": [
+                    [1, 0],
+                    [100, 1]
+                ]
+            },
+            //Increase the heatmap color weight weight by zoom level
+            //heatmap-ntensity is a multiplier on top of heatmap-weight
+            "heatmap-intensity": {
+                "stops": [
+                    [11, 1],
+                    [15, 3]
+                ]
+            },
+            //Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+            //Begin color ramp at 0-stop with a 0-transparancy color
+            //to create a blur-like effect.
+            "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0, "rgba(33,102,172,0)",
+                0.2, "rgb(103,169,207)",
+                0.4, "rgb(209,229,240)",
+                0.6, "rgb(253,219,199)",
+                0.8, "rgb(239,138,98)",
+                1, "rgb(178,24,43)"
+            ],
+            //Adjust the heatmap radius by zoom level
+            "heatmap-radius": {
+                "stops": [
+                    [11, 15],
+                    [15, 20]
+                ]
+            },
+            //Transition from heatmap to circle layer by zoom level
+            "heatmap-opacity": {
+                "default": 1,
+                "stops": [
+                    [14, 1],
+                    [15, 0]
+                ]
+            },
+        },filter: ['==', 'month', 1]
+    }, 'waterway-label');
+
+    map.addLayer({
+        "id": "bicycle1",
+        "type": "circle",
+        "source": "byc",
+        "minzoom": 14,
+		"layout": {
+            'visibility': 'visible'
+        },
+        "paint": {
+            //Size circle raidus by earthquake magnitude and zoom level
+            "circle-radius": {
+                "property": "average",
+                "type": "exponential",
+                "stops": [
+                    [{ zoom: 15, value: 1 }, 5],
+                    [{ zoom: 15, value: 100 }, 10],
+                    [{ zoom: 22, value: 1 }, 20],
+                    [{ zoom: 22, value: 100 }, 50],
+                ]
+            },
+            //Color circle by earthquake magnitude
+            "circle-color": {
+                "property": "average",
+                "type": "exponential",
+                "stops": [
+                    [1, "rgba(33,102,172,0)"],
+                    [3, "rgb(103,169,207)"],
+                    [7, "rgb(209,229,240)"],
+                    [14, "rgb(253,219,199)"],
+                    [24, "rgb(239,138,98)"],
+                    [100, "rgb(178,24,43)"]
+                ]
+            },
+            "circle-stroke-color": "white",
+            "circle-stroke-width": 1,
+            //Transition from heatmap to circle layer by zoom level
+            "circle-opacity": {
+                "stops": [
+                    [10, 0],
+                    [13, 1]
+                ]
+            }
+        },filter: ['==', 'month', 1],
+    }, 'waterway-label');
+});
+
+document.getElementById('slider').addEventListener('input', function(e) {
+  // get the current month as an integer
+  var month = parseInt(e.target.value);
+  // map.setFilter(layer-name, filter)
+  map.setFilter('bicycle', ['==', 'month', month]);
+  var month1 = month % 12 ? month % 12 : 12;
+  // update text in the UI
+  document.getElementById('active-month').innerText = month1 + '월';
+
+});
+
+
+document.getElementById('filters').addEventListener('change', function(e) {
+  var day = e.target.value;
+  var filterDay;
+  if (day === 'all') {
+    filterDay = null;
+  } else if (day === 'weekday') {
+    filterDay = ['!in', 'day', 'Sat', 'Sun'];
+  } else if (day === 'weekend') {
+    filterDay = ['in', 'day', 'Sat', 'Sun'];
+  } else {
+    console.log('error');
+  }
+  map.setFilter('bicycle', filterDay);
+});
+
+//onoff
+var toggleableLayerIds = [ 'bicycle'];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+
+</script>
+
+</body>
+</html>
