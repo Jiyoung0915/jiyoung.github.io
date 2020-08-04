@@ -256,7 +256,7 @@ document.getElementById('filters').addEventListener('change', function(e) {
 map.on('click', 'bicycle', function(e) {
   new mapboxgl.Popup()
     .setLngLat(e.features[0].geometry.coordinates)
-    .setHTML('<b>Station Name:</b> ' + e.features[0].properties.Ename + '<br>' + '<b>Total use:</b> ' + e.features[0].properties.average)
+    .setHTML('<b>Station Name:</b> ' + e.features[0].properties.Ename + '<br>' + '<b>Total use:</b> ' + e.features[0].properties.rent)
     .addTo(map);
 });
 
